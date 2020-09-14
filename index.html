@@ -91,6 +91,9 @@ const temperature = $('#temperature');
 const humidity = $('#humidity');
 const windSpeed = $('#wind-speed');
 const uvIndex = $('#UV-index');
+const history = $('#history');
+const historyButton = $('<button>');
+
 
 
 //submit on clicking search button
@@ -104,26 +107,21 @@ const uvIndex = $('#UV-index');
             console.log(response);
             appendSearchedCity(response)
         });
-
-        
     }
 
     const appendSearchedCity = (response) =>{
-
+        //formatting the response date with MOMENTS.js
         let date = moment(response.list[0].dt_txt).format('L');
         location.append().html('<h1>'+response.city.name+'  '+ date+'</h1>');
         (temperature).append().html('<h4>Temperature :'+response.list[0].main.temp+'</h4>');
         (humidity).append().html('<h4>Humidity :'+response.list[0].main.humidity+'</h4>');
-       (windSpeed).append().html('<h4>Wind Speed:'+response.list[0].wind.speed+'</h4>');
+        (windSpeed).append().html('<h4>Wind Speed:'+response.list[0].wind.speed+'</h4>');
         // (uvIndex).append().html('<h3UV-INDEX:>'+response.city.name+'</h3UV-INDEX:>');
-        
-        
-
+        (history).append().html('<h2 class="w-100 p-3" style="background-color: #eee;">'+response.city.name+'</h2>')
     }
         //listening on search button
         searchButton.click(submitCity);
         //appending the city information 
-     
     })
 
 
