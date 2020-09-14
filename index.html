@@ -83,7 +83,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
-   
+    $(document).ready(function() {
+
+const searchButton = $('#search-button');
+const location = $('#city-name');
+const temperature = $('#temperature');
+const humidity = $('#humidity');
+const windSpeed = $('#wind-speed');
+const uvIndex = $('#UV-index');
+
+
+//submit on clicking search button
+    const submitCity = () => {
+        var cityName = $('#city-input').val();
+        var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q='+cityName+'&appid=0d3e42986e57b790e6c393aa312719f4';
+        $.ajax({
+            type: "GET",
+            url: myQuery
+        }).then(function (response) {
+            console.log(response);
+
+        });
+
+        
+    }
+
+}
     </script>
 
 
