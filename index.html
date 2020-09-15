@@ -39,7 +39,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <span id="city-name" class="city-name align-middle"></span>
-                                <img id="current-pic" src="placeholder" alt="">
+                                <!-- <img id="current-pic" src="placeholder" alt=""> -->
                             </div>
                         </div>
                         <div class="row">
@@ -83,70 +83,96 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function() {
+        $(document).ready(function () {
 
-const searchButton = $('#search-button');
-const location = $('#city-name');
-const temperature = $('#temperature');
-const humidity = $('#humidity');
-const windSpeed = $('#wind-speed');
-const uvIndex = $('#UV-index');
-const history = $('#history');
-const historyButton = $('<button>');
-const savedHistory = JSON.parse(window.localStorage.getItem('History')) || [];
+            const searchButton = $('#search-button');
+            const location = $('#city-name');
+            const temperature = $('#temperature');
+            const humidity = $('#humidity');
+            const windSpeed = $('#wind-speed');
+            const uvIndex = $('#UV-index');
+            const history = $('#history');
+            const historyButton = $('<button>');
+            const savedHistory = JSON.parse(window.localStorage.getItem('History')) || [];
+            const clearHistory = $('#clear-history');
+            let theResponse;
+            
 
+            //submit on clicking search button
+            const submitCity = () => {
+                appendSearchedCity(theResponse);
+            }
 
-for (let i = 0; i < savedHistory.length; i++) {
-        //Retrieves Object from Locale storage
-        let city = savedHistory[i].newCity;
-          //retrieve save data and add to html
-        //   $("#" + id + " .description").append("*" + txt);
-        console.log(city + '<<<<<<--------');
-    // (history).html('<h2 class="w-100 p-3" style="background-color: #eee;">'+city+'</h2>');
-     var theCity = '<h2 class="w-100 p-3" style="background-color: #eee;">'+city+'</h2>';
-    (history).append(theCity);
-};
+            const makeAjaxCall = () => {
+                var cityName = $('#city-input').val();
+                var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&appid=0d3e42986e57b790e6c393aa312719f4';
+                $.ajax({
+                    type: "GET",
+                    url: myQuery
+                }).then(function (response) {
+                    console.log(response);
+                    theResponse = response;
+                    submitCity(theResponse);
+                });
+            }
 
-
-//submit on clicking search button
-    const submitCity = () => {
-        var cityName = $('#city-input').val();
-        var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q='+cityName+'&appid=0d3e42986e57b790e6c393aa312719f4';
-        $.ajax({
-            type: "GET",
-            url: myQuery
-        }).then(function (response) {
-            console.log(response);
-            appendSearchedCity(response)
-        });
-    }
-
-    const appendSearchedCity = (response) =>{
-        //formatting the response date with MOMENTS.js
-        let date = moment(response.list[0].dt_txt).format('L');
-        location.append().html('<h1>'+response.city.name+'  '+ date+'</h1>');
-        (temperature).append().html('<h4>Temperature :'+response.list[0].main.temp+'</h4>');
-        (humidity).append().html('<h4>Humidity :'+response.list[0].main.humidity+'</h4>');
-        (windSpeed).append().html('<h4>Wind Speed:'+response.list[0].wind.speed+'</h4>');
-        // (uvIndex).append().html('<h3UV-INDEX:>'+response.city.name+'</h3UV-INDEX:>');
-        appendToHistory(response);
-    }
+            const appendSearchedCity = () => {
+                //formatting the response date with MOMENTS.js
+                let date = moment(theResponse.list[0].dt_txt).format('L');
+                location.append().html('<h2>' + theResponse.city.name + '    ' +  date + '</h2>');
+                (temperature).append().html('<p>Temperature :' + theResponse.list[0].main.temp + '</p>');
+                (humidity).append().html('<p>Humidity :' + theResponse.list[0].main.humidity + '</p>');
+                (windSpeed).append().html('<p>Wind Speed:' + theResponse.list[0].wind.speed + '</p>');
+                // (uvIndex).append().html('<h3UV-INDEX:>'+response.city.name+'</h3UV-INDEX:>');
+                appendToHistory();
+            }
 
 
-    const appendToHistory = (response) =>{
+            const appendToHistory = () => {
+                let addNewCityToHistory = {
+                    city: theResponse.city.name,
+                    temp: theResponse.list[0].main.temp ,
+                    humidity:theResponse.list[0].main.humidity,
+                    windSpeed:theResponse.list[0].wind.speed,
+                    uv:"4.89",
+                    date :theResponse.list[0].dt_txt
+                };
+                savedHistory.push(addNewCityToHistory);
+                window.localStorage.setItem("History", JSON.stringify(savedHistory));
 
-        (history).append().html('<h2 class="w-100 p-3" style="background-color: #eee;">'+response.city.name+'</h2>')
-        let addNewCityToHistory = {
-          newCity: response.city.name
-        };
-        savedHistory.push(addNewCityToHistory);
-        window.localStorage.setItem("History", JSON.stringify(savedHistory));
+            }
 
-    }
-        //listening on search button
-        searchButton.click(submitCity);
-        //appending the city information 
-    })
+            const rmvHistory = () => {
+                $('h5').remove();
+                localStorage.removeItem("History");
+            }
+            const appendRecentWeather =()=>{
+                let date = moment(savedHistory[0].date).format('L');
+                (location).append().html('<h2>' + savedHistory[0].city + date + '</h2>');
+                (temperature).append().html('<p>Temperature :' + savedHistory[0].temp + '</p>');
+                (humidity).append().html('<p>Humidity :' + savedHistory[0].humidity + '</p>');
+                (windSpeed).append().html('<p>Wind Speed:' + savedHistory[0].windSpeed + '</p>');
+
+            }
+        
+            for (let i = 0; i < savedHistory.length; i++) {
+                //Retrieves Object from Locale storage
+                let city = savedHistory[i].city;
+                var theCity = '<h5 id=saved-city-' + i + ' class="w-100 p-3" style="background-color: #eee;">' + city + '</h5>';
+                (history).append(theCity);
+                
+        }
+
+
+
+            //listening on search button
+            searchButton.click(makeAjaxCall);
+            //appending the city information 
+            clearHistory.click(rmvHistory)
+            appendRecentWeather();
+           
+       
+        })
 
 
     </script>
@@ -155,6 +181,6 @@ for (let i = 0; i < savedHistory.length; i++) {
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="./script.js"></script>
+    <!-- <script src="./script.js"></script> -->
 </body>
 </html>
