@@ -96,16 +96,18 @@
             const savedHistory = JSON.parse(window.localStorage.getItem('History')) || [];
             const clearHistory = $('#clear-history');
             let theResponse;
-            
+
 
             //submit on clicking search button
             const submitCity = () => {
+
                 appendSearchedCity(theResponse);
+                fiveDayForeCast(theResponse);
             }
 
             const makeAjaxCall = () => {
                 var cityName = $('#city-input').val();
-                var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&appid=0d3e42986e57b790e6c393aa312719f4';
+                var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&units=imperial&appid=0d3e42986e57b790e6c393aa312719f4';
                 $.ajax({
                     type: "GET",
                     url: myQuery
@@ -116,26 +118,49 @@
                 });
             }
 
+
             const appendSearchedCity = () => {
                 //formatting the response date with MOMENTS.js
                 let date = moment(theResponse.list[0].dt_txt).format('L');
-                location.append().html('<h2>' + theResponse.city.name + '    ' +  date + '</h2>');
-                (temperature).append().html('<p>Temperature :' + theResponse.list[0].main.temp + '</p>');
-                (humidity).append().html('<p>Humidity :' + theResponse.list[0].main.humidity + '</p>');
-                (windSpeed).append().html('<p>Wind Speed:' + theResponse.list[0].wind.speed + '</p>');
+                location.append().html('<h2>' + theResponse.city.name + '    ' + date + '</h2>');
+                (temperature).append().html('<p>Temperature :' + theResponse.list[0].main.temp + ' °F</p>');
+                (humidity).append().html('<p>Humidity :' + theResponse.list[0].main.humidity + ' %</p>');
+                (windSpeed).append().html('<p>Wind Speed:' + theResponse.list[0].wind.speed + ' MPH</p>');
                 // (uvIndex).append().html('<h3UV-INDEX:>'+response.city.name+'</h3UV-INDEX:>');
+
                 appendToHistory();
+            }
+
+            const fiveDayForeCast = () => {
+
+                $(".forecast").each(function (index) {
+                   $(this).attr("id", "day-" +index);
+                    let date = moment(theResponse.list[index].dt_txt).format('L');
+                   
+                    let html =  '<small>' + date + '</small>' +
+                                '<img>' +
+                                '<small>Temp : ' + theResponse.list[index].main.temp + ' °F</small>' +
+                                '<small>Humidity :' + theResponse.list[index].main.humidity + ' %</small>' +
+                                '<small>Wind Speed:' + theResponse.list[index].wind.speed + ' MPH</small>' ;
+                    
+                    $("#day-" + index).append(html)
+                  
+                });
+
+
+                
+
             }
 
 
             const appendToHistory = () => {
                 let addNewCityToHistory = {
                     city: theResponse.city.name,
-                    temp: theResponse.list[0].main.temp ,
-                    humidity:theResponse.list[0].main.humidity,
-                    windSpeed:theResponse.list[0].wind.speed,
-                    uv:"4.89",
-                    date :theResponse.list[0].dt_txt
+                    temp: theResponse.list[0].main.temp,
+                    humidity: theResponse.list[0].main.humidity,
+                    windSpeed: theResponse.list[0].wind.speed,
+                    uv: "4.89",
+                    date: theResponse.list[0].dt_txt
                 };
                 savedHistory.push(addNewCityToHistory);
                 window.localStorage.setItem("History", JSON.stringify(savedHistory));
@@ -146,32 +171,26 @@
                 $('h5').remove();
                 localStorage.removeItem("History");
             }
-            const appendRecentWeather =()=>{
+            const appendRecentWeather = () => {
                 let date = moment(savedHistory[0].date).format('L');
-                (location).append().html('<h2>' + savedHistory[0].city + date + '</h2>');
-                (temperature).append().html('<p>Temperature :' + savedHistory[0].temp + '</p>');
-                (humidity).append().html('<p>Humidity :' + savedHistory[0].humidity + '</p>');
-                (windSpeed).append().html('<p>Wind Speed:' + savedHistory[0].windSpeed + '</p>');
-
+                (location).append().html('<h2>' + savedHistory[0].city + ' ' + date + '</h2>');
+                (temperature).append().html('<p>Temperature : ' + savedHistory[0].temp + ' °F</p>');
+                (humidity).append().html('<p>Humidity : ' + savedHistory[0].humidity + ' %</p>');
+                (windSpeed).append().html('<p>Wind Speed: ' + savedHistory[0].windSpeed + ' MPH</p>');
             }
-        
+
             for (let i = 0; i < savedHistory.length; i++) {
                 //Retrieves Object from Locale storage
                 let city = savedHistory[i].city;
                 var theCity = '<h5 id=saved-city-' + i + ' class="w-100 p-3" style="background-color: #eee;">' + city + '</h5>';
                 (history).append(theCity);
-                
-        }
-
-
+            }
 
             //listening on search button
             searchButton.click(makeAjaxCall);
             //appending the city information 
             clearHistory.click(rmvHistory)
             appendRecentWeather();
-           
-       
         })
 
 
