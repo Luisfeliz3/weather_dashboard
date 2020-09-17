@@ -39,7 +39,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <span id="city-name" class="city-name align-middle"></span>
-                                <img id="current-pic" src="placeholder" alt="">
+                                <img id="current-pic" src="" alt="">
                             </div>
                         </div>
                         <div class="row">
@@ -104,6 +104,9 @@
                 if($(".forecast").length){
                     $(".forecast").empty();
         }
+                var city = $('#city-input').val();
+                var theCity = '<h5 class="w-100 p-3" style="background-color: #eee;">' + city + '</h5>';
+                (history).append(theCity);
                 appendSearchedCity(theResponse);
                 fiveDayForeCast(theResponse);
             }
@@ -160,15 +163,9 @@
             const appendToHistory = () => {
                 let addNewCityToHistory = {
                     city: theResponse.city.name,
-                    temp: theResponse.list[0].main.temp,
-                    humidity: theResponse.list[0].main.humidity,
-                    windSpeed: theResponse.list[0].wind.speed,
-                    uv: "4.89",
-                    date: theResponse.list[0].dt_txt
                 };
                 savedHistory.push(addNewCityToHistory);
                 window.localStorage.setItem("History", JSON.stringify(savedHistory));
-
             }
 
             const rmvHistory = () => {
@@ -197,6 +194,7 @@
             }
            
             const appendRecentWeather = () => {
+                // console.log(savedHistory[savedHistory.length].city + "<<<<<<----------");
                  var cityName = savedHistory[0].city;
                 var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&units=imperial&appid=0d3e42986e57b790e6c393aa312719f4';
                 $.ajax({
@@ -222,6 +220,11 @@
                 var theCity = '<h5 id=saved-city-' + i + ' class="w-100 p-3" style="background-color: #eee;">' + city + '</h5>';
                 (history).append(theCity);
             }
+
+
+
+            
+
             //listening on search button
             searchButton.on('click',makeAjaxCall);
             //appending the city information 
