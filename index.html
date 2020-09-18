@@ -105,10 +105,14 @@
                     $(".forecast").empty();
         }
                 var city = $('#city-input').val();
-                var theCity = '<h5 class="w-100 p-3" style="background-color: #eee;">' + city + '</h5>';
+                var theCity = '<button class="w-100 p-3" style="background-color: #eee;border: none;">' + city + '</button>';
                 (history).append(theCity);
                 appendSearchedCity(theResponse);
                 fiveDayForeCast(theResponse);
+            }
+            const rmvHistory = () => {
+                $('.w-100').detach();
+                localStorage.removeItem("History");
             }
 
             const makeAjaxCall = () => {
@@ -168,10 +172,7 @@
                 window.localStorage.setItem("History", JSON.stringify(savedHistory));
             }
 
-            const rmvHistory = () => {
-                $('h5').remove();
-                localStorage.removeItem("History");
-            }
+          
             
         
             const recentFiveDayForeCast = (response) => {
@@ -217,12 +218,30 @@
             for (let i = 0; i < savedHistory.length; i++) {
                 //Retrieves Object from Locale storage
                 let city = savedHistory[i].city;
-                var theCity = '<h5 id=saved-city-' + i + ' class="w-100 p-3" style="background-color: #eee;">' + city + '</h5>';
+                var theCity = '<button id=saved-city-' + i + ' class="w-100 p-3" style="background-color: #eee; border: none;">' + city + '</button>';
                 (history).append(theCity);
             }
 
-
-
+            $('.w-100').on('click', function (e) {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    console.log(e.target.textContent);
+                    var cityName = e.target.textContent;
+                    var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&units=imperial&appid=0d3e42986e57b790e6c393aa312719f4';
+                    $.ajax({
+                        type: "GET",
+                        url: myQuery
+                    }).then(function (response) {
+                        console.log(response);
+                        theResponse = response;
+                        if($(".forecast").length){
+                    $(".forecast").empty();
+        }
+                        appendSearchedCity(theResponse);
+                        fiveDayForeCast(theResponse);
+                    });
+                }
+            })
             
 
             //listening on search button
