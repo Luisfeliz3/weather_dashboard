@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <!-- <link rel="stylesheet" href="./assets/css/style.css"> -->
     <title>Weather Dashboard</title>
 </head>
+
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <span class="navbar-brand mb-0 h1 w-100 text-center">Weather Dashboard</span>
@@ -21,7 +24,8 @@
             <div class="col-4 bg-light">
                 <p class="search-header my-1">Search for a city</p>
                 <div class="input-group mb-3">
-                    <input id="city-input" type="text" class="form-control" placeholder="Enter city name" aria-label="Enter city name">
+                    <input id="city-input" type="text" class="form-control" placeholder="Enter city name"
+                        aria-label="Enter city name">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="button" id="search-button">
                             <i class="fas fa-search"></i>
@@ -76,7 +80,7 @@
                     <div class="col forecast bg-primary text-white ml-3 mb-3 rounded"></div>
                     <div class="col forecast bg-primary text-white ml-3 mb-3 rounded"></div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -101,9 +105,9 @@
 
             //submit on clicking search button
             const submitCity = () => {
-                if($(".forecast").length){
+                if ($(".forecast").length) {
                     $(".forecast").empty();
-        }
+                }
                 var city = $('#city-input').val();
                 var theCity = '<button class="w-100 p-3" style="background-color: #eee;border: none;">' + city + '</button>';
                 (history).append(theCity);
@@ -124,7 +128,7 @@
                 }).then(function (response) {
                     console.log(response);
                     theResponse = response;
-                    submitCity(theResponse);              
+                    submitCity(theResponse);
                 });
             }
 
@@ -143,23 +147,23 @@
 
             const fiveDayForeCast = () => {
                 forecast.each(function (index) {
-                  let id= $(this).attr("id", "day-" +index);
-                     $(this).addClass("card");
-                    let date = moment(theResponse.list[index].dt_txt).format('L');
+                    let id = $(this).attr("id", "day-" + index);
+                    $(this).addClass("card");
+                    let date = moment(theResponse.list[Index ].dt_txt).format('L');
                     var div = $("<div>");
-                     id.append(div).append('<small>' + date + '</small>');
-                     
+                    id.append(div).append('<small>' + date + '</small>');
+
 
                     var iconURL = "https://openweathermap.org/img/wn/" + theResponse.list[index].weather[0].icon + "@2x.png";
-                   
+
                     var img = $("<img>");
-                    
+
                     id.append(img);
                     img.attr("src", iconURL)
 
-                     id.append(div).append('<small> Temp:' + theResponse.list[index].main.temp + '</small>');
-                     id.append(div).append('<small> Humidity' + theResponse.list[index].main.humidity + '</small>');
-                     id.append(div).append('<small> Wind' + theResponse.list[index].wind.speed + '</small>');  
+                    id.append(div).append('<small> Temp:' + theResponse.list[index].main.temp + '</small>');
+                    id.append(div).append('<small> Humidity' + theResponse.list[index].main.humidity + '</small>');
+                    id.append(div).append('<small> Wind' + theResponse.list[index].wind.speed + '</small>');
                 });
             }
 
@@ -172,49 +176,49 @@
                 window.localStorage.setItem("History", JSON.stringify(savedHistory));
             }
 
-          
-            
-        
+
+
+
             const recentFiveDayForeCast = (response) => {
                 forecast.each(function (index) {
-                  let id= $(this).attr("id", "day-" +index);
-                     $(this).addClass("card");
+                    let id = $(this).attr("id", "day-" + index);
+                    $(this).addClass("card");
                     let date = moment(response.list[0].dt_txt).format('L');
                     var div = $("<div>");
-                     id.append(div).append('<small>' + date + '</small>');
+                    id.append(div).append('<small>' + date + '</small>');
 
                     var iconURL = "https://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png";
                     var image = new Image();
                     image.src = iconURL;
                     id.append(image);
-                    
-                     id.append(div).append('<small> Temp:' + response.list[0].main.temp + '</small>');
-                     id.append(div).append('<small> Humidity' + response.list[0].main.humidity + '</small>');
-                     id.append(div).append('<small> Wind' + response.list[0].wind.speed + '</small>');  
+
+                    id.append(div).append('<small> Temp:' + response.list[0].main.temp + '</small>');
+                    id.append(div).append('<small> Humidity' + response.list[0].main.humidity + '</small>');
+                    id.append(div).append('<small> Wind' + response.list[0].wind.speed + '</small>');
                 });
             }
-           
+
             const appendRecentWeather = () => {
                 // console.log(savedHistory[savedHistory.length].city + "<<<<<<----------");
-                 var cityName = savedHistory[0].city;
+                var cityName = savedHistory[0].city;
                 var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&units=imperial&appid=0d3e42986e57b790e6c393aa312719f4';
                 $.ajax({
                     type: "GET",
                     url: myQuery
                 }).then(function (response) {
                     console.log(response);
-                let date = moment(response.list[0].dt_txt).format('L');
-                (location).append().html('<h2>' + response.city.name + '    ' + date + '</h2>');
-                var iconURL = "https://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png";
-                $('#current-pic').attr('src', iconURL);
-                (temperature).append().html('<p>Temperature :' + response.list[0].main.temp + ' °F</p>');
-                (humidity).append().html('<p>Humidity :' + response.list[0].main.humidity + ' %</p>');
-                (windSpeed).append().html('<p>Wind:' + response.list[0].wind.speed + ' MPH</p>');   
-                recentFiveDayForeCast(response);
+                    let date = moment(response.list[0].dt_txt).format('L');
+                    (location).append().html('<h2>' + response.city.name + '    ' + date + '</h2>');
+                    var iconURL = "https://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png";
+                    $('#current-pic').attr('src', iconURL);
+                    (temperature).append().html('<p>Temperature :' + response.list[0].main.temp + ' °F</p>');
+                    (humidity).append().html('<p>Humidity :' + response.list[0].main.humidity + ' %</p>');
+                    (windSpeed).append().html('<p>Wind:' + response.list[0].wind.speed + ' MPH</p>');
+                    recentFiveDayForeCast(response);
                 });
             }
 
-        
+
             for (let i = 0; i < savedHistory.length; i++) {
                 //Retrieves Object from Locale storage
                 let city = savedHistory[i].city;
@@ -234,32 +238,38 @@
                     }).then(function (response) {
                         console.log(response);
                         theResponse = response;
-                        if($(".forecast").length){
-                    $(".forecast").empty();
-        }
+                        if ($(".forecast").length) {
+                            $(".forecast").empty();
+                        }
                         appendSearchedCity(theResponse);
                         fiveDayForeCast(theResponse);
                     });
                 }
             })
-            
+
 
             //listening on search button
-            searchButton.on('click',makeAjaxCall);
+            searchButton.on('click', makeAjaxCall);
             //appending the city information 
             clearHistory.click(rmvHistory)
             appendRecentWeather();
-            
-            
+
+
         })
 
 
     </script>
 
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
     <!-- <script src="./script.js"></script> -->
 </body>
+
 </html>
