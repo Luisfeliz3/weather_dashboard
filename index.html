@@ -147,7 +147,7 @@
 
             const fiveDayForeCast = (theResponse) => {
                 forecast.each(function (index) {
-                    index++;
+                    index*= 9;
                     let id = $(this).attr("id", "day-" + index);
                     $(this).addClass("card");
                     let date = moment(theResponse.list[index].dt_txt).format('L');
@@ -158,7 +158,7 @@
                     var iconURL = "https://openweathermap.org/img/wn/" + theResponse.list[index].weather[0].icon + "@2x.png";
 
                     var img = $("<img>");
-
+                      
                     id.append(img);
                     img.attr("src", iconURL)
 
@@ -216,7 +216,7 @@
                     (temperature).append().html('<p>Temperature :' + response.list[savedHistory.length].main.temp + ' °F</p>');
                     (humidity).append().html('<p>Humidity :' + response.list[savedHistory.length].main.humidity + ' %</p>');
                     (windSpeed).append().html('<p>Wind:' + response.list[savedHistory.length].wind.speed + ' MPH</p>');
-                    recentFiveDayForeCast(response);
+                   
                 });
             }
 
