@@ -147,25 +147,25 @@
 
             const fiveDayForeCast = (theResponse) => {
                 forecast.each(function (index) {
-                    index*= 9;
+                    index *= 9;
                     let id = $(this).attr("id", "day-" + index);
                     $(this).addClass("card");
                     let date = moment(theResponse.list[index].dt_txt).format('L');
                     var div = $("<div>");
                     id.append(div).append('<small>' + date + '</small>');
 
-            
+
                     var iconURL = "https://openweathermap.org/img/wn/" + theResponse.list[index].weather[0].icon + "@2x.png";
 
                     var img = $("<img>");
-                      
+
                     id.append(img);
                     img.attr("src", iconURL)
 
                     id.append(div).append('<small> Temp:' + theResponse.list[index].main.temp + '</small>');
                     id.append(div).append('<small> Humidity' + theResponse.list[index].main.humidity + '</small>');
                     id.append(div).append('<small> Wind' + theResponse.list[index].wind.speed + '</small>');
-                    
+
                 });
             }
 
@@ -182,41 +182,42 @@
 
 
             const recentFiveDayForeCast = (response) => {
-                // forecast.each(function (index) {
-                //     let id = $(this).attr("id", "day-" + index);
-                //     $(this).addClass("card");
-                //     let date = moment(response.list[0].dt_txt).format('L');
-                //     var div = $("<div>");
-                //     id.append(div).append('<small>' + date + '</small>');
+                forecast.each(function (index) {
+                    index *= 9;
+                    let id = $(this).attr("id", "day-" + index);
+                    $(this).addClass("card");
+                    let date = moment(response.list[index].dt_txt).format('L');
+                    var div = $("<div>");
+                    id.append(div).append('<small>' + date + '</small>');
 
-                //     var iconURL = "https://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png";
-                //     var image = new Image();
-                //     image.src = iconURL;
-                //     id.append(image);
+                    var iconURL = "https://openweathermap.org/img/wn/" + response.list[index].weather[0].icon + "@2x.png";
+                    var image = new Image();
+                    image.src = iconURL;
+                    id.append(image);
 
-                //     id.append(div).append('<small> Temp:' + response.list[0].main.temp + '</small>');
-                //     id.append(div).append('<small> Humidity' + response.list[0].main.humidity + '</small>');
-                //     id.append(div).append('<small> Wind' + response.list[0].wind.speed + '</small>');
-                // });
+                    id.append(div).append('<small> Temp :' + response.list[index].main.temp + '</small>');
+                    id.append(div).append('<small> Humidity : ' + response.list[index].main.humidity + '</small>');
+                    id.append(div).append('<small> Wind : ' + response.list[index].wind.speed + '</small>');
+                });
             }
 
             const appendRecentWeather = () => {
                 // console.log(savedHistory[savedHistory.length].city + "<<<<<<----------");
-                var cityName = savedHistory[savedHistory.length].city;
+                var cityName = savedHistory[0].city;
                 var myQuery = 'https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&units=imperial&appid=0d3e42986e57b790e6c393aa312719f4';
                 $.ajax({
                     type: "GET",
                     url: myQuery
                 }).then(function (response) {
                     console.log(response);
-                    let date = moment(response.list[savedHistory.length].dt_txt).format('L');
+                    let date = moment(response.list[0].dt_txt).format('L');
                     (location).append().html('<h2>' + response.city.name + '    ' + date + '</h2>');
-                    var iconURL = "https://openweathermap.org/img/wn/" + response.list[savedHistory.length].weather[0].icon + "@2x.png";
+                    var iconURL = "https://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png";
                     $('#current-pic').attr('src', iconURL);
-                    (temperature).append().html('<p>Temperature :' + response.list[savedHistory.length].main.temp + ' °F</p>');
-                    (humidity).append().html('<p>Humidity :' + response.list[savedHistory.length].main.humidity + ' %</p>');
-                    (windSpeed).append().html('<p>Wind:' + response.list[savedHistory.length].wind.speed + ' MPH</p>');
-                   
+                    (temperature).append().html('<p>Temperature :' + response.list[0].main.temp + ' °F</p>');
+                    (humidity).append().html('<p>Humidity :' + response.list[0].main.humidity + ' %</p>');
+                    (windSpeed).append().html('<p>Wind:' + response.list[0].wind.speed + ' MPH</p>');
+                    recentFiveDayForeCast(response);
                 });
             }
 
