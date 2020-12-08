@@ -141,7 +141,6 @@
                 (temperature).append().html('<p>Temperature :' + theResponse.list[0].main.temp + ' °F</p>');
                 (humidity).append().html('<p>Humidity :' + theResponse.list[0].main.humidity + ' %</p>');
                 (windSpeed).append().html('<p>Wind Speed:' + theResponse.list[0].wind.speed + ' MPH</p>');
-                // (uvIndex).append().html('<h3UV-INDEX:>'+response.city.name+'</h3UV-INDEX:>');
                 appendToHistory(theResponse);
             }
 
